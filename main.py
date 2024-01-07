@@ -3,17 +3,19 @@ import os
 import pygame
 import sys
 from level_builder import LevelBuilder
+from button import Button
 
 pygame.init()
 
 class EscapeFromLesok:
     def __init__(self):
         self.FPS = 50
-        self.size = SIZE = WIDTH, HEIGHT = (800, 800)
+        self.size = SIZE = WIDTH, HEIGHT = (800, 600)
         self.BLACK = pygame.Color("#000000")
         self.WHITE = pygame.Color("white")
         self.RED = pygame.Color("red")
         self.running = True
+        self.button = Button((WIDTH/2 - (252/ 2), 300), (252, 74), "Играть", "box.jpg", "grass.jpg")
         self.l_b = LevelBuilder()
         self.screen = pygame.display.set_mode(SIZE)
         self.clock = pygame.time.Clock()
@@ -45,9 +47,11 @@ class EscapeFromLesok:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.terminate()
-                elif event.type == pygame.KEYDOWN or \
-                        event.type == pygame.MOUSEBUTTONDOWN:
-                    return
+                # elif event.type == pygame.KEYDOWN or \
+                #         event.type == pygame.MOUSEBUTTONDOWN:
+                #     return
+            self.button.check_hover(pygame.mouse.get_pos())
+            self.button.draw(self.screen)
             pygame.display.flip()
             self.clock.tick(self.FPS)
 
