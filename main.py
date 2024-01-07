@@ -10,14 +10,17 @@ pygame.init()
 class EscapeFromLesok:
     def __init__(self):
         self.FPS = 50
-        self.size = SIZE = WIDTH, HEIGHT = (800, 600)
+        self.SIZE = (800, 600)
+        self.WIDTH = self.SIZE[0]
+        self.HEIGHT = self.SIZE[1]
         self.BLACK = pygame.Color("#000000")
         self.WHITE = pygame.Color("white")
         self.RED = pygame.Color("red")
         self.running = True
-        self.button = Button((WIDTH/2 - (252/ 2), 300), (252, 74), "Играть", "box.jpg", "grass.jpg")
+        self.button_play = Button((self.WIDTH / 2 - (252 / 2), 300), (252, 74), "Играть", "box.jpg", "grass.jpg")
+        self.button_quit = Button((self.WIDTH / 2 - (252 / 2), 400), (252, 74), "Выход", "box.jpg", "grass.jpg")
         self.l_b = LevelBuilder()
-        self.screen = pygame.display.set_mode(SIZE)
+        self.screen = pygame.display.set_mode(self.SIZE)
         self.clock = pygame.time.Clock()
 
     def terminate(self):
@@ -30,10 +33,10 @@ class EscapeFromLesok:
                       "Находите батарейки, чтобы фонарик не погас",
                       "Остерегайтесь темноты"]
 
-        fon = pygame.transform.scale(self.l_b.load_image('fon.jpg'), self.size)
+        fon = pygame.transform.scale(self.l_b.load_image('fon.jpg'), self.SIZE)
         self.screen.blit(fon, (0, 0))
         font = pygame.font.Font(None, 30)
-        text_coord = 50
+        text_coord = 0
         for line in intro_text:
             string_rendered = font.render(line, 1, self.RED)
             intro_rect = string_rendered.get_rect()
@@ -47,11 +50,14 @@ class EscapeFromLesok:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.terminate()
-                # elif event.type == pygame.KEYDOWN or \
-                #         event.type == pygame.MOUSEBUTTONDOWN:
-                #     return
-            self.button.check_hover(pygame.mouse.get_pos())
-            self.button.draw(self.screen)
+                elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and self.button_quit.is_hovered:
+                    self.terminate()
+                elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and self.button_play.is_hovered:
+                    return
+            self.button_play.check_hover(pygame.mouse.get_pos())
+            self.button_play.draw(self.screen)
+            self.button_quit.check_hover(pygame.mouse.get_pos())
+            self.button_quit.draw(self.screen)
             pygame.display.flip()
             self.clock.tick(self.FPS)
 
@@ -63,6 +69,8 @@ class EscapeFromLesok:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
+            pygame.draw.line(self.screen, self.WHITE, (0, 0), (self.WIDTH, self.HEIGHT), 5)
+            pygame.draw.line(self.screen, self.WHITE, (self.WIDTH, 0), (0, self.HEIGHT), 5)
             pygame.display.flip()
         self.terminate()
 
