@@ -19,6 +19,7 @@ class EscapeFromLesok:
         self.running = True
         self.button_play = Button((self.WIDTH / 2 - (252 / 2), 300), (252, 74), "Играть", "box.jpg", "grass.jpg")
         self.button_quit = Button((self.WIDTH / 2 - (252 / 2), 400), (252, 74), "Выход", "box.jpg", "grass.jpg")
+        self.buttons_main_menu = [self.button_play, self.button_quit]
         self.l_b = LevelBuilder()
         self.screen = pygame.display.set_mode(self.SIZE)
         self.clock = pygame.time.Clock()
@@ -50,14 +51,18 @@ class EscapeFromLesok:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.terminate()
-                elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and self.button_quit.is_hovered:
-                    self.terminate()
-                elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and self.button_play.is_hovered:
+                elif event.type == pygame.USEREVENT and event.button == self.button_play:
                     return
-            self.button_play.check_hover(pygame.mouse.get_pos())
-            self.button_play.draw(self.screen)
-            self.button_quit.check_hover(pygame.mouse.get_pos())
-            self.button_quit.draw(self.screen)
+
+                elif event.type == pygame.USEREVENT and event.button == self.button_quit:
+                    self.terminate()
+
+                for button in self.buttons_main_menu:
+                    button.handle_event(event)
+
+            for button in self.buttons_main_menu:
+                button.check_hover(pygame.mouse.get_pos())
+                button.draw(self.screen)
             pygame.display.flip()
             self.clock.tick(self.FPS)
 
