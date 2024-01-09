@@ -9,15 +9,20 @@ class InputBox:
         self.text = text
         self.COLOR_ACTIVE = pygame.Color("#FE0D00")
         self.COLOR_INACTIVE = pygame.Color("#FF4940")
-        self.color = self.COLOR_INACTIVE
+        self.current_color = self.COLOR_INACTIVE
         self.active = False
         self.input_box = pygame.Rect(self.x_pos, self.y_pos, self.width, self.height)
         self.font = pygame.font.Font(None, 30)
-        self.text_surface = self.font.render(self.text, True, self.color)
+        self.text_surface = self.font.render(self.text, True, self.current_color)
+        self.is_hovered = False
 
     def draw(self, screen):
+        self.current_color = self.COLOR_ACTIVE if self.is_hovered else self.COLOR_INACTIVE
         screen.blit(self.text_surface, (self.input_box.x + 5, self.input_box.y + 5))
-        pygame.draw.rect(screen, self.color, self.input_box, 2)
+        pygame.draw.rect(screen, self.current_color, self.input_box, 2)
+
+    def check_hover(self, mouse_pos):
+        self.is_hovered = self.input_box.collidepoint(mouse_pos)
 
 
 
