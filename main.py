@@ -28,9 +28,9 @@ class EscapeFromLesok:
         sys.exit()
 
     def main_menu(self):
-        button_play = Button((self.WIDTH / 2 - (252 / 2), 200), (252, 74), "Играть", "box.jpg", "grass.jpg")
-        button_rules = Button((self.WIDTH / 2 - (252 / 2), 300), (252, 74), "Правила", "box.jpg", "grass.jpg")
-        button_quit = Button((self.WIDTH / 2 - (252 / 2), 400), (252, 74), "Выход", "box.jpg", "grass.jpg")
+        button_play = Button((self.WIDTH / 2 - (252 / 2), 200), (252, 74), "Играть", "button_1.jpg", "button_2.jpg")
+        button_rules = Button((self.WIDTH / 2 - (252 / 2), 300), (252, 74), "Правила", "button_1.jpg", "button_2.jpg")
+        button_quit = Button((self.WIDTH / 2 - (252 / 2), 400), (252, 74), "Выход", "button_1.jpg", "button_2.jpg")
         buttons_main_menu = [button_play, button_rules, button_quit]
 
 
@@ -62,8 +62,7 @@ class EscapeFromLesok:
             pygame.display.flip()
             self.clock.tick(self.FPS)
     def rules_menu(self):
-        button_quit_to_menu = Button((self.WIDTH / 2 - (252 / 2), 300), (252, 74), "Выход в меню", "box.jpg",
-                                     "grass.jpg")
+        button_quit_to_menu = Button((self.WIDTH / 2 - (252 / 2), 300), (252, 74), "Выход в меню", "button_1.jpg", "button_2.jpg")
         while self.running:
             self.screen.fill(self.BLACK)
             fon = pygame.transform.scale(self.l_b.load_image('fon.jpg'), self.SIZE)
@@ -95,8 +94,7 @@ class EscapeFromLesok:
         self.terminate()
 
     def login_to_the_game_menu(self):
-        button_quit_to_menu = Button((self.WIDTH / 2 - (252 / 2), 400), (252, 74), "Выход в меню", "box.jpg",
-                                     "grass.jpg")
+        button_quit_to_menu = Button((self.WIDTH / 2 - (252 / 2), 400), (252, 74), "Выход в меню", "button_1.jpg", "button_2.jpg")
         nickname_input_box = InputBox((self.WIDTH / 2 - (252 / 2), 250), (252, 74))
 
         while self.running:
@@ -113,6 +111,9 @@ class EscapeFromLesok:
                 elif event.type == pygame.USEREVENT and event.button == button_quit_to_menu:
                     self.main_menu()
                 button_quit_to_menu.handle_event(event)
+                nickname_input_box.handle_event(event)
+            nickname_input_box.update_size()
+
             nickname_input_box.draw(self.screen)
             nickname_input_box.check_hover(pygame.mouse.get_pos())
             button_quit_to_menu.check_hover(pygame.mouse.get_pos())
