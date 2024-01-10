@@ -17,6 +17,7 @@ class EscapeFromLesok:
         self.BLACK = pygame.Color("#000000")
         self.WHITE = pygame.Color("white")
         self.RED = pygame.Color("red")
+        self.nickname = ''
         self.running = True
         self.l_b = LevelBuilder()
         self.screen = pygame.display.set_mode(self.SIZE)
@@ -44,7 +45,7 @@ class EscapeFromLesok:
                 if event.type == pygame.QUIT:
                     self.terminate()
                 elif event.type == pygame.USEREVENT and event.button == button_play:
-                    self.registration_menu()
+                    self.login_to_the_game_menu()
 
                 elif event.type == pygame.USEREVENT and event.button == button_rules:
                     self.rules_menu()
@@ -93,13 +94,18 @@ class EscapeFromLesok:
             pygame.display.flip()
         self.terminate()
 
-    def registration_menu(self):
-        button_quit_to_menu = Button((self.WIDTH / 2 - (252 / 2), 300), (252, 74), "Выход в меню", "box.jpg",
+    def login_to_the_game_menu(self):
+        button_quit_to_menu = Button((self.WIDTH / 2 - (252 / 2), 400), (252, 74), "Выход в меню", "box.jpg",
                                      "grass.jpg")
+        nickname_input_box = InputBox((self.WIDTH / 2 - (252 / 2), 250), (252, 74))
+
         while self.running:
             self.screen.fill(self.BLACK)
             fon = pygame.transform.scale(self.l_b.load_image('fon.jpg'), self.SIZE)
             self.screen.blit(fon, (0, 0))
+            font = pygame.font.Font(None, 50)
+            text = font.render("Введите ваш никнейм", 1, self.RED)
+            self.screen.blit(text, (220, 200))
             self.clock.tick(self.FPS)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -107,8 +113,12 @@ class EscapeFromLesok:
                 elif event.type == pygame.USEREVENT and event.button == button_quit_to_menu:
                     self.main_menu()
                 button_quit_to_menu.handle_event(event)
+            nickname_input_box.draw(self.screen)
+            nickname_input_box.check_hover(pygame.mouse.get_pos())
             button_quit_to_menu.check_hover(pygame.mouse.get_pos())
             button_quit_to_menu.draw(self.screen)
+            pygame.display.flip()
+        self.terminate()
 
 
     def run_game(self):
