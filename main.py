@@ -28,9 +28,9 @@ class EscapeFromLesok:
         sys.exit()
 
     def main_menu(self):
-        button_play = Button((self.WIDTH / 2 - (252 / 2), 200), (252, 74), "Играть", "button_1.jpg", "button_2.jpg")
-        button_rules = Button((self.WIDTH / 2 - (252 / 2), 300), (252, 74), "Правила", "button_1.jpg", "button_2.jpg")
-        button_quit = Button((self.WIDTH / 2 - (252 / 2), 400), (252, 74), "Выход", "button_1.jpg", "button_2.jpg")
+        button_play = Button((self.WIDTH / 2 - (252 / 2), 200), (252, 100), "Играть", "button_1.jpg", "button_2.jpg")
+        button_rules = Button((self.WIDTH / 2 - (252 / 2), 300), (252, 100), "Правила", "button_1.jpg", "button_2.jpg")
+        button_quit = Button((self.WIDTH / 2 - (252 / 2), 400), (252, 100), "Выход", "button_1.jpg", "button_2.jpg")
         buttons_main_menu = [button_play, button_rules, button_quit]
 
 
@@ -62,7 +62,7 @@ class EscapeFromLesok:
             pygame.display.flip()
             self.clock.tick(self.FPS)
     def rules_menu(self):
-        button_quit_to_menu = Button((self.WIDTH / 2 - (252 / 2), 300), (252, 74), "Выход в меню", "button_1.jpg", "button_2.jpg")
+        button_quit_to_menu = Button((self.WIDTH / 2 - (252 / 2), 300), (252, 100), "Выход в меню", "button_1.jpg", "button_2.jpg")
         while self.running:
             self.screen.fill(self.BLACK)
             fon = pygame.transform.scale(self.l_b.load_image('fon.jpg'), self.SIZE)
@@ -94,7 +94,7 @@ class EscapeFromLesok:
         self.terminate()
 
     def login_to_the_game_menu(self):
-        button_quit_to_menu = Button((self.WIDTH / 2 - (252 / 2), 400), (252, 74), "Выход в меню", "button_1.jpg", "button_2.jpg")
+        button_quit_to_menu = Button((self.WIDTH / 2 - (252 / 2), 400), (252, 100), "Выход в меню", "button_1.jpg", "button_2.jpg")
         nickname_input_box = InputBox((self.WIDTH / 2 - (252 / 2), 250), (252, 74))
 
         while self.running:
@@ -124,14 +124,19 @@ class EscapeFromLesok:
 
     def run_game(self):
         self.main_menu()
+        player, level_x, level_y = self.l_b.generate_level(self.l_b.load_level())
+        all_sprites = pygame.sprite.Group()
         while self.running:
             self.clock.tick(self.FPS)
             self.screen.fill(self.BLACK)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
+                if event.type == pygame.KEYDOWN:
+                    player.update(event.key)
             fon = pygame.transform.scale(self.l_b.load_image('fon.jpg'), self.SIZE)
             self.screen.blit(fon, (0, 0))
+            all_sprites.draw(self.screen)
             pygame.display.flip()
         self.terminate()
 

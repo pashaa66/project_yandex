@@ -6,6 +6,7 @@ class Button:
         self.x_pos = pos[0]
         self.y_pos = pos[1]
         self.BLACK = pygame.Color("black")
+        self.WHITE = pygame.Color("white")
         self.width = size[0]
         self.height = size[1]
         self.image = image
@@ -23,7 +24,7 @@ class Button:
         current_image = self.hover_image if self.is_hovered else self.img
         screen.blit(current_image, self.rect.topleft)
         font = pygame.font.Font(None, 30)
-        text_surface = font.render(self.text, True, self.BLACK)
+        text_surface = font.render(self.text, True, self.WHITE)
         text_rect = text_surface.get_rect(center=self.rect.center)
         screen.blit(text_surface, text_rect)
 
