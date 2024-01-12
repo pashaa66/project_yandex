@@ -1,5 +1,6 @@
 import pygame
 
+
 class InputBox:
     def __init__(self, pos, size, text=''):
         self.x_pos = pos[0]
@@ -7,6 +8,7 @@ class InputBox:
         self.width = size[0]
         self.height = size[1]
         self.text = text
+        self.nickname = ''
         self.COLOR_ACTIVE = pygame.Color("#FE0D00")
         self.COLOR_INACTIVE = pygame.Color("#FF4940")
         self.current_color = self.COLOR_INACTIVE
@@ -28,25 +30,18 @@ class InputBox:
         new_width = max(252, self.text_surface.get_width() + 10)
         self.input_box.w = new_width
 
+    def return_nickname(self):
+        return self.nickname
+
     def handle_event(self, event):
         if self.is_hovered:
             if event.type == pygame.KEYDOWN:
                 if self.active:
                     if event.key == pygame.K_RETURN:
+                        self.nickname = self.text
                         self.text = ''
                     elif event.key == pygame.K_BACKSPACE:
                         self.text = self.text[:-1]
                     else:
                         self.text += event.unicode
                     self.text_surface = self.font.render(self.text, True, self.current_color)
-
-
-
-
-
-
-
-
-
-
-
