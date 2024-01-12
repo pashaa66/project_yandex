@@ -2,8 +2,8 @@ import os
 import sys
 import pygame
 
-from objects import Tile, Box
-from player import Player
+# from objects import Tile, Box
+# from player import Player
 
 
 class LevelBuilder:
@@ -36,20 +36,20 @@ class LevelBuilder:
             image = image.convert_alpha()
         return image
 
-    def generate_level(self, level):
-        new_player, x, y = None, None, None
-        px, py = None, None
-        box = Box(x, y)
-        tile = Tile(x,y)
-        for y in range(len(level)):
-            for x in range(len(level[y])):
-                if level[y][x] == '.':
-                    Tile(x, y)
-                elif level[y][x] == '#':
-                    return box
-                elif level[y][x] == '@':
-                    px, py = x, y
-                    return tile
-        new_player = Player(px, py)
-        return new_player, x, y
+    # def generate_level(self, level):
+    #     new_player, x, y = None, None, None
+    #     px, py = None, None
+    #     box = Box(x, y)
+    #     tile = Tile(x,y)
+    #     for y in range(len(level)):
+    #         for x in range(len(level[y])):
+    #             if level[y][x] == '.':
+    #                 Tile(x, y)
+    #             elif level[y][x] == '#':
+    #                 return box
+    #             elif level[y][x] == '@':
+    #                 px, py = x, y
+    #                 return tile
+    #     new_player = Player(px, py)
+    #     return new_player, x, y
 
