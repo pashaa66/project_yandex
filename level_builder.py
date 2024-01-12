@@ -2,6 +2,7 @@ import os
 import sys
 import pygame
 
+
 # from objects import Tile, Box
 # from player import Player
 
@@ -9,7 +10,6 @@ import pygame
 class LevelBuilder:
     def __init__(self):
         self.filename = 'map.txt'
-
 
     def load_level(self):
         try:
@@ -27,29 +27,11 @@ class LevelBuilder:
             print(f"Файл с изображением '{fullname}' не найден")
             sys.exit()
         image = pygame.image.load(fullname)
-        if colorkey is not None:
-            image = image.convert()
-            if colorkey == -1:
-                colorkey = image.get_at((0, 0))
-            image.set_colorkey(colorkey)
-        else:
-            image = image.convert_alpha()
+        # if colorkey is not None:
+        #     image = image.convert()
+        #     if colorkey == -1:
+        #         colorkey = image.get_at((0, 0))
+        #     image.set_colorkey(colorkey)
+        # else:
+        #     image = image.convert_alpha()
         return image
-
-    # def generate_level(self, level):
-    #     new_player, x, y = None, None, None
-    #     px, py = None, None
-    #     box = Box(x, y)
-    #     tile = Tile(x,y)
-    #     for y in range(len(level)):
-    #         for x in range(len(level[y])):
-    #             if level[y][x] == '.':
-    #                 Tile(x, y)
-    #             elif level[y][x] == '#':
-    #                 return box
-    #             elif level[y][x] == '@':
-    #                 px, py = x, y
-    #                 return tile
-    #     new_player = Player(px, py)
-    #     return new_player, x, y
-

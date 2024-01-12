@@ -1,10 +1,10 @@
 import pygame
 from level_builder import LevelBuilder
 
-
 all_sprites = pygame.sprite.Group()
 tiles_group = pygame.sprite.Group()
 box_group = pygame.sprite.Group()
+
 
 class Tile(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):

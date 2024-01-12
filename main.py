@@ -6,10 +6,12 @@ from level_builder import LevelBuilder
 from button import Button
 from input_box import InputBox
 from database import DataBase
+from levels import Levels
+from camera import Camera
 pygame.init()
 
 
-class EscapeFromLesok:
+class EscapeFromForest:
     def __init__(self):
         self.FPS = 50
         self.SIZE = (800, 600)
@@ -21,7 +23,9 @@ class EscapeFromLesok:
         self.nickname = ''
         self.db = DataBase()
         self.running = True
+        self.levels = Levels()
         self.l_b = LevelBuilder()
+        self.camera = Camera()
         self.screen = pygame.display.set_mode(self.SIZE)
         self.clock = pygame.time.Clock()
 
@@ -141,36 +145,23 @@ class EscapeFromLesok:
             pygame.display.flip()
         self.terminate()
 
-    # def run_game(self):
-    #     self.main_menu()
-    #     while self.running:
-    #         self.clock.tick(self.FPS)
-    #         self.screen.fill(self.BLACK)
-    #         for event in pygame.event.get():
-    #             if event.type == pygame.QUIT:
-    #                 self.running = False
-    #         fon = pygame.transform.scale(self.l_b.load_image('fon.jpg'), self.SIZE)
-    #         self.screen.blit(fon, (0, 0))
-    #         pygame.display.flip()
-    #     self.terminate()
-
     def run_game(self):
-        # player, level_x, level_y = self.l_b.generate_level(self.l_b.load_level())
-        # all_sprites = pygame.sprite.Group()
+        player, level_x, level_y = self.levels.generate_level(self.l_b.load_level())
+        all_sprites = pygame.sprite.Group()
         while self.running:
             self.screen.fill(self.BLACK)
-            fon = pygame.transform.scale(self.l_b.load_image('fon.jpg'), self.SIZE)
-            self.screen.blit(fon, (0, 0))
             self.clock.tick(self.FPS)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.running = False
-                # if event.type == pygame.KEYDOWN:
-                #     #player.update(event.key)
-            # all_sprites.draw(self.screen)
+                    self.terminate()
+                if event.type == pygame.KEYDOWN:
+                    print(player.update(event.key))
+            for sprite in all_sprites:
+                self.camera.apply(sprite)
+            all_sprites.draw(self.screen)
             pygame.display.flip()
         self.terminate()
 
 
-game = EscapeFromLesok()
+game = EscapeFromForest()
 game.main_menu()
