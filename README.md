@@ -32,4 +32,5 @@
     + Библиотеки необходимые для запуска:
       - pygame
       - sys
+* https://docs.google.com/presentation/d/1UYGx9MBGaROMwbdDyJZaHoD3iL5-ZU_zG6uJbk6pjQs/edit?usp=sharing
         
