@@ -2,14 +2,9 @@ import os
 import sys
 import pygame
 
-
-# from objects import Tile, Box
-# from player import Player
-
-
 class LevelBuilder:
     def __init__(self):
-        self.filename = 'map.txt'
+        self.filename = "map.txt"
 
     def load_level(self):
         try:

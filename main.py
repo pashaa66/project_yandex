@@ -6,10 +6,77 @@ from level_builder import LevelBuilder
 from button import Button
 from input_box import InputBox
 from database import DataBase
-from levels import Levels
 from camera import Camera
 pygame.init()
 
+l_b = LevelBuilder()
+tile_width = tile_height = 100
+
+
+all_sprites = pygame.sprite.Group()
+tiles_group = pygame.sprite.Group()
+player_group = pygame.sprite.Group()
+box_group = pygame.sprite.Group()
+
+
+class Tile(pygame.sprite.Sprite):
+    def __init__(self,pos_x, pos_y):
+        super().__init__(tiles_group, all_sprites)
+        self.image = l_b.load_image('grass.jpg')
+        self.rect = self.image.get_rect().move(
+            tile_width * pos_x, tile_height * pos_y)
+
+
+class Box(pygame.sprite.Sprite):
+    def __init__(self,pos_x, pos_y):
+        super().__init__(tiles_group, all_sprites, box_group)
+        self.image = l_b.load_image('box.jpg')
+        self.rect = self.image.get_rect().move(
+            tile_width * pos_x, tile_height * pos_y)
+
+class Player(pygame.sprite.Sprite):
+    def __init__(self, pos_x, pos_y):
+        super().__init__(player_group, all_sprites)
+        self.image = l_b.load_image('mar.png')
+        self.rect = self.image.get_rect().move(
+            tile_width * pos_x + 15, tile_height * pos_y + 5)
+
+    def update(self, *args, **kwargs):
+        if args:
+            if args[0] == pygame.K_w:
+                self.rect = self.rect.move(0, -50)
+            if args[0] == pygame.K_s:
+                self.rect = self.rect.move(0, 50)
+            if args[0] == pygame.K_a:
+                self.rect = self.rect.move(-50, 0)
+            if args[0] == pygame.K_d:
+                self.rect = self.rect.move(50, 0)
+        if pygame.sprite.spritecollide(self, box_group, False):
+            if args[0] == pygame.K_w:
+                self.rect = self.rect.move(0, 50)
+            if args[0] == pygame.K_s:
+                self.rect = self.rect.move(0, -50)
+            if args[0] == pygame.K_a:
+                self.rect = self.rect.move(50, 0)
+            if args[0] == pygame.K_d:
+                self.rect = self.rect.move(-50, 0)
+
+
+
+def generate_level(level):
+    new_player, x, y = None, None, None
+    px, py = None, None
+    for y in range(len(level)):
+        for x in range(len(level[y])):
+            if level[y][x] == '.':
+                Tile(x, y)
+            elif level[y][x] == '#':
+                Box(x, y)
+            elif level[y][x] == '@':
+                Tile(x, y)
+                px, py = x, y
+    new_player = Player(px, py)
+    return new_player, x, y
 
 class EscapeFromForest:
     def __init__(self):
@@ -22,10 +89,9 @@ class EscapeFromForest:
         self.RED = pygame.Color("red")
         self.nickname = ''
         self.db = DataBase()
+        self.camera = Camera(self.WIDTH, self.HEIGHT)
         self.running = True
-        self.levels = Levels()
         self.l_b = LevelBuilder()
-        self.camera = Camera()
         self.screen = pygame.display.set_mode(self.SIZE)
         self.clock = pygame.time.Clock()
 
@@ -146,16 +212,18 @@ class EscapeFromForest:
         self.terminate()
 
     def run_game(self):
-        player, level_x, level_y = self.levels.generate_level(self.l_b.load_level())
-        all_sprites = pygame.sprite.Group()
+        player, level_x, level_y = generate_level(self.l_b.load_level())
         while self.running:
             self.screen.fill(self.BLACK)
+            fon = pygame.transform.scale(self.l_b.load_image('fon.jpg'), self.SIZE)
+            self.screen.blit(fon, (0, 0))
             self.clock.tick(self.FPS)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.terminate()
                 if event.type == pygame.KEYDOWN:
-                    print(player.update(event.key))
+                    player.update(event.key)
+            self.camera.update(player)
             for sprite in all_sprites:
                 self.camera.apply(sprite)
             all_sprites.draw(self.screen)
