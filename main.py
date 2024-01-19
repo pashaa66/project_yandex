@@ -17,6 +17,7 @@ all_sprites = pygame.sprite.Group()
 tiles_group = pygame.sprite.Group()
 player_group = pygame.sprite.Group()
 box_group = pygame.sprite.Group()
+tree_group = pygame.sprite.Group()
 
 
 class Tile(pygame.sprite.Sprite):
@@ -34,10 +35,17 @@ class Box(pygame.sprite.Sprite):
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
 
+class Tree(pygame.sprite.Sprite):
+    def __init__(self,pos_x, pos_y):
+        super().__init__(tree_group, all_sprites)
+        self.image = l_b.load_image("grass2_with_tree2.jpeg")
+        self.rect = self.image.get_rect().move(
+            tile_width * pos_x, tile_height * pos_y)
+
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(player_group, all_sprites)
-        self.image = l_b.load_image('mar.png')
+        self.image = l_b.load_image('hero.png')
         self.rect = self.image.get_rect().move(
             tile_width * pos_x + 15, tile_height * pos_y + 5)
 
@@ -72,6 +80,8 @@ def generate_level(level):
                 Tile(x, y)
             elif level[y][x] == '#':
                 Box(x, y)
+            elif level[y][x] == '*':
+                Tree(x, y)
             elif level[y][x] == '@':
                 Tile(x, y)
                 px, py = x, y
@@ -81,7 +91,7 @@ def generate_level(level):
 class EscapeFromForest:
     def __init__(self):
         self.FPS = 50
-        self.SIZE = (800, 600)
+        self.SIZE = (1080, 720)
         self.WIDTH = self.SIZE[0]
         self.HEIGHT = self.SIZE[1]
         self.BLACK = pygame.Color("#000000")
@@ -110,7 +120,7 @@ class EscapeFromForest:
             self.screen.blit(fon, (0, 0))
             font = pygame.font.Font(None, 50)
             text = font.render("ПОБЕГ ИЗ ЛЕСКА", 1, self.RED)
-            self.screen.blit(text, (250, 50))
+            self.screen.blit(text, (self.WIDTH / 2 - (252 / 2) - 20, 50))
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -180,7 +190,7 @@ class EscapeFromForest:
             self.screen.blit(fon, (0, 0))
             font = pygame.font.Font(None, 50)
             text = font.render("Введите ваш никнейм", 1, self.RED)
-            self.screen.blit(text, (220, 200))
+            self.screen.blit(text, (self.WIDTH / 2 - (252 / 2), 200))
             self.clock.tick(self.FPS)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
