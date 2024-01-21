@@ -22,6 +22,7 @@ class EscapeFromForest:
         self.RED = pygame.Color("red")
         self.nickname = ''
         self.db = DataBase()
+        self.score = 0
         self.camera = Camera(self.WIDTH, self.HEIGHT)
         self.running = True
         self.l_b = LevelBuilder()
@@ -157,6 +158,13 @@ class EscapeFromForest:
                     self.terminate()
                 if event.type == pygame.KEYDOWN:
                     player.update(event.key)
+                    player.check_alive()
+                    self.score = player.score
+                    if event.key == pygame.K_SPACE:
+                        player.shoot()
+            # for ghost in ghost_group:
+            #     ghost.update(player_pos)
+            all_sprites.update()
             self.camera.update(player)
             for sprite in all_sprites:
                 self.camera.apply(sprite)
