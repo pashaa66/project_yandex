@@ -1,6 +1,6 @@
 import pygame
-import math
 from level_builder import LevelBuilder
+
 l_b = LevelBuilder()
 tile_width = tile_height = 100
 all_sprites = pygame.sprite.Group()
@@ -11,37 +11,57 @@ wall_group = pygame.sprite.Group()
 ghost_group = pygame.sprite.Group()
 bullet_group = pygame.sprite.Group()
 coins_group = pygame.sprite.Group()
-
+doors_group = pygame.sprite.Group()
+bush_group = pygame.sprite.Group()
 
 
 class Grass(pygame.sprite.Sprite):
-    def __init__(self,pos_x, pos_y):
+    def __init__(self, pos_x, pos_y):
         super().__init__(all_sprites, grass_group)
         self.image = l_b.load_image('grass.jpg')
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
 
 
+class Door(pygame.sprite.Sprite):
+    def __init__(self, pos_x, pos_y):
+        super().__init__(all_sprites, doors_group)
+        self.image = l_b.load_image('door.png')
+        self.rect = self.image.get_rect().move(
+            tile_width * pos_x, tile_height * pos_y)
+
+
+class Bush(pygame.sprite.Sprite):
+    def __init__(self, pos_x, pos_y):
+        super().__init__(all_sprites, bush_group)
+        self.image = l_b.load_image('bush_with_berry.png')
+        self.rect = self.image.get_rect().move(
+            tile_width * pos_x, tile_height * pos_y)
+
+
 class TreeFirst(pygame.sprite.Sprite):
-    def __init__(self,pos_x, pos_y):
+    def __init__(self, pos_x, pos_y):
         super().__init__(all_sprites, tree_group)
         self.image = l_b.load_image("grass_with_tree.jpeg")
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
+
+
 class Wall(pygame.sprite.Sprite):
-    def __init__(self,pos_x, pos_y):
+    def __init__(self, pos_x, pos_y):
         super().__init__(all_sprites, wall_group)
         self.image = l_b.load_image("wood_wall.jpg")
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
 
+
 class Coin(pygame.sprite.Sprite):
-    def __init__(self,pos_x, pos_y):
+    def __init__(self, pos_x, pos_y):
         super().__init__(all_sprites, coins_group)
         self.image = l_b.load_image("coin.png")
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
-        self.amount = 50
+
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -57,6 +77,8 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.x += self.speedx
         if self.rect.bottom < 0:
             self.kill()
+
+
 class Ghost(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(all_sprites, ghost_group)
@@ -95,6 +117,7 @@ class Player(pygame.sprite.Sprite):
         self.speed_x = 0
         self.speed_y = 0
         self.speed = 50
+
     def update(self, *args, **kwargs):
         self.speed_x = 0
         self.speed_y = 0
@@ -115,6 +138,11 @@ class Player(pygame.sprite.Sprite):
                 self.image = l_b.load_image('hero.png')
             self.rect.x += self.speed_x
             self.rect.y += self.speed_y
+            if pygame.sprite.spritecollide(self, bush_group, False):
+                if args[0] == pygame.K_e:
+                    self.hp += 5
+                    for bush in bush_group:
+                        bush.image = l_b.load_image('bush.png')
         if pygame.sprite.spritecollide(self, tree_group, False):
             if args[0] == pygame.K_w:
                 self.speed_y = self.speed
@@ -151,6 +179,8 @@ class Player(pygame.sprite.Sprite):
             self.rect.y += self.speed_y
         if pygame.sprite.spritecollide(self, coins_group, True):
             self.score += 50
+        if pygame.sprite.spritecollide(self, doors_group, False):
+            print('a')
 
     def shoot(self):
         bullet = Bullet(self.rect.top, self.rect.centerx)
@@ -160,6 +190,8 @@ class Player(pygame.sprite.Sprite):
     def check_alive(self):
         if self.hp <= 0:
             self.kill()
+            return False
+        return True
 
 
 def generate_level(level):
@@ -171,13 +203,18 @@ def generate_level(level):
                 Grass(x, y)
             elif level[y][x] == '*':
                 TreeFirst(x, y)
+            elif level[y][x] == 'd':
+                Door(x, y)
+            elif level[y][x] == '%':
+                Grass(x, y)
+                Bush(x, y)
             elif level[y][x] == '~':
                 Wall(x, y)
             elif level[y][x] == '#':
-                Grass(x,y)
+                Grass(x, y)
                 Ghost(x, y)
             elif level[y][x] == 'C':
-                Grass(x,y)
+                Grass(x, y)
                 Coin(x, y)
             elif level[y][x] == '@':
                 Grass(x, y)

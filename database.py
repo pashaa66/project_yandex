@@ -7,7 +7,7 @@ class Error(Exception):
 
 class DataBase:
     def __init__(self):
-        pass
+        self.db = "database_game.sqlite3"
 
     def check_nickname(self, nickname):
         try:
