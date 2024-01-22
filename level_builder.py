@@ -4,11 +4,11 @@ import pygame
 
 class LevelBuilder:
     def __init__(self):
-        self.filename = "map.txt"
+        pass
 
-    def load_level(self):
+    def load_level(self, filename):
         try:
-            filename = "data/" + self.filename
+            filename = "data/" + filename
             with open(filename, 'r') as mapFile:
                 level_map = [line.strip() for line in mapFile]
                 max_width = max(map(len, level_map))

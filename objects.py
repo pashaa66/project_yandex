@@ -1,3 +1,5 @@
+import math
+
 import pygame
 from level_builder import LevelBuilder
 
@@ -35,6 +37,7 @@ class Bush(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(all_sprites, bush_group)
         self.image = l_b.load_image('bush_with_berry.png')
+        self.eaten = True
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
 
@@ -71,10 +74,10 @@ class Bullet(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.bottom = y
         self.rect.centerx = x
-        self.speedx = 10
+        self.speedy = -10
 
     def update(self):
-        self.rect.x += self.speedx
+        self.rect.y += self.speedy
         if self.rect.bottom < 0:
             self.kill()
 
@@ -89,10 +92,10 @@ class Ghost(pygame.sprite.Sprite):
         self.hp = 100
         self.speed = 2
 
-    # def update(self,*args):
+    # def update(self,*args, **kwargs):
     #     if args:
-    #         player_pos_x = args[0]
-    #         player_pos_y = args[1]
+    #         player_pos_x = 0
+    #         player_pos_y = 0
     #         dx = player_pos_x - self.rect.centerx
     #         dy = player_pos_y - self.rect.centery
     #         distance = math.sqrt(dx ** 2 + dy ** 2)
@@ -138,11 +141,13 @@ class Player(pygame.sprite.Sprite):
                 self.image = l_b.load_image('hero.png')
             self.rect.x += self.speed_x
             self.rect.y += self.speed_y
-            if pygame.sprite.spritecollide(self, bush_group, False):
-                if args[0] == pygame.K_e:
+        collided_bushes = pygame.sprite.spritecollide(self, bush_group, False)
+        if collided_bushes and args and args[0] == pygame.K_e:
+            for bush in collided_bushes:
+                if bush.eaten:
                     self.hp += 5
-                    for bush in bush_group:
-                        bush.image = l_b.load_image('bush.png')
+                    bush.eaten = False
+                    bush.image = l_b.load_image('bush.png')
         if pygame.sprite.spritecollide(self, tree_group, False):
             if args[0] == pygame.K_w:
                 self.speed_y = self.speed
@@ -183,7 +188,7 @@ class Player(pygame.sprite.Sprite):
             print('a')
 
     def shoot(self):
-        bullet = Bullet(self.rect.top, self.rect.centerx)
+        bullet = Bullet(self.rect.centerx, self.rect.top)
         all_sprites.add(bullet)
         bullet_group.add(bullet)
 

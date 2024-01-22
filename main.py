@@ -145,7 +145,7 @@ class EscapeFromForest:
         self.terminate()
 
     def run_game(self):
-        player, level_x, level_y = generate_level(self.l_b.load_level())
+        player, level_x, level_y = generate_level(self.l_b.load_level("level1.txt"))
         while self.running:
             self.screen.fill(self.BLACK)
             fon = pygame.transform.scale(self.l_b.load_image('fon.jpg'), self.SIZE)
@@ -164,8 +164,11 @@ class EscapeFromForest:
                         self.end_screen()
                     if event.key == pygame.K_SPACE:
                         player.shoot()
-            # for ghost in ghost_group:
-            #     ghost.update(player_pos)
+            hits = pygame.sprite.groupcollide(ghost_group, bullet_group, False, True)
+            for hit in hits:
+                hit.hp -= 25
+                if hit.hp == 0:
+                    hit.kill()
             all_sprites.update()
             self.camera.update(player)
             for sprite in all_sprites:
@@ -210,4 +213,4 @@ class EscapeFromForest:
 
 
 game = EscapeFromForest()
-game.main_menu()
+game.run_game()
