@@ -20,7 +20,7 @@ bush_group = pygame.sprite.Group()
 class Grass(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(all_sprites, grass_group)
-        self.image = l_b.load_image('grass.jpg')
+        self.image = l_b.load_image("grass.jpg")
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
 
@@ -28,7 +28,7 @@ class Grass(pygame.sprite.Sprite):
 class Door(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(all_sprites, doors_group)
-        self.image = l_b.load_image('door.png')
+        self.image = l_b.load_image("door.png")
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
 
@@ -36,16 +36,16 @@ class Door(pygame.sprite.Sprite):
 class Bush(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(all_sprites, bush_group)
-        self.image = l_b.load_image('bush_with_berry.png')
+        self.image = l_b.load_image("bush_with_berry.png")
         self.eaten = True
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
 
 
-class TreeFirst(pygame.sprite.Sprite):
+class Tree(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(all_sprites, tree_group)
-        self.image = l_b.load_image("grass_with_tree.jpeg")
+        self.image = l_b.load_image("tree2.jpg")
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
 
@@ -69,8 +69,7 @@ class Coin(pygame.sprite.Sprite):
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((20, 10))
-        self.image.fill(pygame.Color('yellow'))
+        self.image = l_b.load_image("bullet.jpg")
         self.rect = self.image.get_rect()
         self.rect.bottom = y
         self.rect.centerx = x
@@ -85,31 +84,26 @@ class Bullet(pygame.sprite.Sprite):
 class Ghost(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(all_sprites, ghost_group)
-        self.image = l_b.load_image('ghost.png')
+        self.image = l_b.load_image("ghost.png")
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
         self.hp = 100
         self.speed = 2
-
-    # def update(self,*args, **kwargs):
-    #     if args:
-    #         player_pos_x = 0
-    #         player_pos_y = 0
-    #         dx = player_pos_x - self.rect.centerx
-    #         dy = player_pos_y - self.rect.centery
-    #         distance = math.sqrt(dx ** 2 + dy ** 2)
-    #         if distance != 0:
-    #             dx = dx / distance
-    #             dy = dy / distance
-    #         self.rect.x += dx * self.speed
-    #         self.rect.y += dy * self.speed
-
-
+        # self.player = player
+    # def update(self, *args, **kwargs):
+    #     dx = self.player.rect.x - self.rect.centerx
+    #     dy = self.player.rect.y - self.rect.centery
+    #     distance = math.sqrt(dx ** 2 + dy ** 2)
+    #     if distance != 0:
+    #         dx = dx / distance
+    #         dy = dy / distance
+    #     self.rect.x += dx * self.speed
+    #     self.rect.y += dy * self.speed
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(all_sprites, player_group)
-        self.image = l_b.load_image('hero.png')
+        self.image = l_b.load_image("hero.png")
         # self.rect = self.image.get_rect().move(
         #     tile_width * pos_x + 15, tile_height * pos_y + 5)
         self.mask = pygame.mask.from_surface(self.image)
@@ -134,11 +128,11 @@ class Player(pygame.sprite.Sprite):
             if args[0] == pygame.K_a:
                 # self.rect = self.rect.move(-50, 0)
                 self.speed_x = -self.speed
-                self.image = l_b.load_image('hero2.png')
+                self.image = l_b.load_image("hero2.png")
             if args[0] == pygame.K_d:
                 # self.rect = self.rect.move(50, 0)
                 self.speed_x = self.speed
-                self.image = l_b.load_image('hero.png')
+                self.image = l_b.load_image("hero.png")
             self.rect.x += self.speed_x
             self.rect.y += self.speed_y
         collided_bushes = pygame.sprite.spritecollide(self, bush_group, False)
@@ -147,7 +141,7 @@ class Player(pygame.sprite.Sprite):
                 if bush.eaten:
                     self.hp += 5
                     bush.eaten = False
-                    bush.image = l_b.load_image('bush.png')
+                    bush.image = l_b.load_image("bush.png")
         if pygame.sprite.spritecollide(self, tree_group, False):
             if args[0] == pygame.K_w:
                 self.speed_y = self.speed
@@ -192,6 +186,7 @@ class Player(pygame.sprite.Sprite):
         all_sprites.add(bullet)
         bullet_group.add(bullet)
 
+
     def check_alive(self):
         if self.hp <= 0:
             self.kill()
@@ -207,7 +202,8 @@ def generate_level(level):
             if level[y][x] == '.':
                 Grass(x, y)
             elif level[y][x] == '*':
-                TreeFirst(x, y)
+                Grass(x,y)
+                Tree(x, y)
             elif level[y][x] == 'd':
                 Door(x, y)
             elif level[y][x] == '%':

@@ -164,6 +164,7 @@ class EscapeFromForest:
                         self.end_screen()
                     if event.key == pygame.K_SPACE:
                         player.shoot()
+
             hits = pygame.sprite.groupcollide(ghost_group, bullet_group, False, True)
             for hit in hits:
                 hit.hp -= 25
@@ -213,4 +214,4 @@ class EscapeFromForest:
 
 
 game = EscapeFromForest()
-game.run_game()
+game.main_menu()
