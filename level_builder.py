@@ -2,6 +2,7 @@ import os
 import sys
 import pygame
 
+
 class LevelBuilder:
     def __init__(self):
         pass

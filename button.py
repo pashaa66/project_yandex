@@ -1,6 +1,7 @@
 import pygame
 from level_builder import LevelBuilder
 
+
 class Button:
     def __init__(self, pos, size, text, image, hover_image=None):
         self.x_pos = pos[0]
@@ -34,5 +35,3 @@ class Button:
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and self.is_hovered:
             pygame.event.post(pygame.event.Event(pygame.USEREVENT, button=self))
-
-

@@ -1,5 +1,3 @@
-import sys
-
 from button import Button
 from input_box import InputBox
 from database import DataBase
@@ -196,7 +194,7 @@ class EscapeFromForest:
 
     def end_screen(self):
         button_quit_to_menu = Button((self.WIDTH / 2 - (252 / 2), 300), (252, 100), "Выход в меню",
-                                     "button_1.jpg","button_2.jpg")
+                                     "button_1.jpg", "button_2.jpg")
         nickname, score, kills, eaten = self.nickname, self.score, self.kills, self.eaten
         self.nickname = ''
         self.score, self.kills, self.eaten = 0, 0, 0
