@@ -16,10 +16,26 @@ class LevelBuilder:
         except FileNotFoundError as e:
             print(e)
 
-    def load_image(self, name):
+    def load_image(self, name, color_key=None):
         fullname = os.path.join('data', name)
         if not os.path.isfile(fullname):
             print(f"Файл с изображением '{fullname}' не найден")
             sys.exit()
         image = pygame.image.load(fullname)
+        if color_key is not None:
+            image = image.convert()
+            if color_key == -1:
+                color_key = image.get_at((0, 0))
+            image.set_colorkey(color_key)
+        else:
+            image = image.convert_alpha()
         return image
+
+    def terminate(self):
+        pygame.quit()
+        sys.exit()
+
+    def clear_sprites(self, every=None):
+        if every is not None:
+            for sprite in every:
+                sprite.kill()

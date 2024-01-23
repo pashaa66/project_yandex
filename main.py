@@ -23,16 +23,16 @@ class EscapeFromForest:
         self.nickname = ''
         self.db = DataBase()
         self.score = 0
+        self.kills = 0
+        self.eaten = 0
         self.camera = Camera(self.WIDTH, self.HEIGHT)
         self.running = True
         self.alive = True
-        self.l_b = LevelBuilder()
+        self.level_builder = LevelBuilder()
         self.screen = pygame.display.set_mode(self.SIZE)
         self.clock = pygame.time.Clock()
 
-    def terminate(self):
-        pygame.quit()
-        sys.exit()
+
 
     def main_menu(self):
         button_play = Button((self.WIDTH / 2 - (252 / 2), 200), (252, 100), "Играть", "button_1.jpg", "button_2.jpg")
@@ -41,7 +41,7 @@ class EscapeFromForest:
         buttons_main_menu = [button_play, button_rules, button_quit]
 
         while self.running:
-            fon = pygame.transform.scale(self.l_b.load_image('fon.jpg'), self.SIZE)
+            fon = pygame.transform.scale(self.level_builder.load_image('fon.jpg'), self.SIZE)
             self.screen.blit(fon, (0, 0))
             font = pygame.font.Font(None, 50)
             text = font.render("ПОБЕГ ИЗ ЛЕСКА", 1, self.RED)
@@ -49,7 +49,7 @@ class EscapeFromForest:
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.terminate()
+                    self.level_builder.terminate()
                 elif event.type == pygame.USEREVENT and event.button == button_play:
                     self.login_to_the_game_menu()
 
@@ -57,7 +57,7 @@ class EscapeFromForest:
                     self.rules_menu()
 
                 elif event.type == pygame.USEREVENT and event.button == button_quit:
-                    self.terminate()
+                    self.level_builder.terminate()
 
                 for button in buttons_main_menu:
                     button.handle_event(event)
@@ -73,12 +73,11 @@ class EscapeFromForest:
                                      "button_2.jpg")
         while self.running:
             self.screen.fill(self.BLACK)
-            fon = pygame.transform.scale(self.l_b.load_image('fon.jpg'), self.SIZE)
+            fon = pygame.transform.scale(self.level_builder.load_image('fon.jpg'), self.SIZE)
             self.screen.blit(fon, (0, 0))
             intro_text = ["Правила игры:",
                           "Зарабатывайте очки, собирая монетки",
-                          # "Остерегайтесь темноты", "Находите оружие на земле",
-                          "Чтобы поговорить с персонажем, нажмите 'E'"]
+                          "Чтобы съесть ягоду, нажмите 'E'", "Чтобы стрелять вверх нажмите 'SPACE'", "Чтобы стрелять вниз, нажмите 'V'"]
             font = pygame.font.Font(None, 36)
             text_coord = 0
             for line in intro_text:
@@ -100,7 +99,7 @@ class EscapeFromForest:
             button_quit_to_menu.draw(self.screen)
 
             pygame.display.flip()
-        self.terminate()
+        self.level_builder.terminate()
 
     def login_to_the_game_menu(self):
         button_quit_to_menu = Button((self.WIDTH / 2 - (252 / 2), 400), (252, 100), "Выход в меню", "button_1.jpg",
@@ -112,7 +111,7 @@ class EscapeFromForest:
         text = "Введите ваш никнейм"
         while self.running:
             self.screen.fill(self.BLACK)
-            fon = pygame.transform.scale(self.l_b.load_image('fon.jpg'), self.SIZE)
+            fon = pygame.transform.scale(self.level_builder.load_image('fon.jpg'), self.SIZE)
             self.screen.blit(fon, (0, 0))
             font = pygame.font.Font(None, 50)
             self.clock.tick(self.FPS)
@@ -142,33 +141,40 @@ class EscapeFromForest:
             nickname_input_box.draw(self.screen)
             nickname_input_box.check_hover(pygame.mouse.get_pos())
             pygame.display.flip()
-        self.terminate()
+        self.level_builder.terminate()
 
     def run_game(self):
-        player, level_x, level_y = generate_level(self.l_b.load_level("level1.txt"))
+        player, level_x, level_y = generate_level(self.level_builder.load_level("level.txt"))
         while self.running:
             self.screen.fill(self.BLACK)
-            fon = pygame.transform.scale(self.l_b.load_image('fon.jpg'), self.SIZE)
+            fon = pygame.transform.scale(self.level_builder.load_image('fon.jpg'), self.SIZE)
             self.screen.blit(fon, (0, 0))
             self.clock.tick(self.FPS)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.terminate()
+                    self.level_builder.terminate()
                 if event.type == pygame.KEYDOWN:
                     player.update(event.key)
                     self.score = player.score
+                    self.eaten = player.eaten
                     print(player.hp)
                     print(self.score)
                     if not player.check_alive():
                         self.alive = False
                         self.end_screen()
-                    if event.key == pygame.K_SPACE:
-                        player.shoot()
-
-            hits = pygame.sprite.groupcollide(ghost_group, bullet_group, False, True)
+                    if event.key == pygame.K_UP:
+                        player.shoot(event.key)
+                    if event.key == pygame.K_DOWN:
+                        player.shoot(event.key)
+                    if event.key == pygame.K_LEFT:
+                        player.shoot(event.key)
+                    if event.key == pygame.K_RIGHT:
+                        player.shoot(event.key)
+            hits = pygame.sprite.groupcollide(enemy_group, bullet_group, False, True)
             for hit in hits:
                 hit.hp -= 25
                 if hit.hp == 0:
+                    self.kills +=1
                     hit.kill()
             all_sprites.update()
             self.camera.update(player)
@@ -176,7 +182,7 @@ class EscapeFromForest:
                 self.camera.apply(sprite)
             all_sprites.draw(self.screen)
             pygame.display.flip()
-        self.terminate()
+        self.level_builder.terminate()
 
     def end_screen(self):
         button_quit_to_menu = Button((self.WIDTH / 2 - (252 / 2), 300), (252, 100), "Выход в меню", "button_1.jpg",
@@ -184,12 +190,13 @@ class EscapeFromForest:
         while self.running:
             self.screen.fill(self.BLACK)
             result = "Победа" if self.alive else "Поражение"
-            fon = pygame.transform.scale(self.l_b.load_image('fon.jpg'), self.SIZE)
+            fon = pygame.transform.scale(self.level_builder.load_image('fon.jpg'), self.SIZE)
             self.screen.blit(fon, (0, 0))
             font = pygame.font.Font(None, 50)
             text = font.render(result, 1, self.RED)
             self.screen.blit(text, (self.WIDTH / 2 - (252 / 2) + 50, 0))
-            intro_text = [f"{self.nickname}", f"Очки: {self.score}"]
+            intro_text = [f"{self.nickname}", f"Очки: {self.score}", f"Убито: {self.kills}", f"Съедино ягод: {self.eaten}"]
+            self.db.add_to_database(self.nickname, self.score)
             font1 = pygame.font.Font(None, 36)
             text_coord = 50
             for line in intro_text:
@@ -203,15 +210,14 @@ class EscapeFromForest:
             self.clock.tick(self.FPS)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.running = False
+                    self.level_builder.terminate()
                 elif event.type == pygame.USEREVENT and event.button == button_quit_to_menu:
                     self.main_menu()
                 button_quit_to_menu.handle_event(event)
             button_quit_to_menu.check_hover(pygame.mouse.get_pos())
             button_quit_to_menu.draw(self.screen)
             pygame.display.flip()
-        self.terminate()
-
+        self.level_builder.terminate()
 
 game = EscapeFromForest()
 game.main_menu()
