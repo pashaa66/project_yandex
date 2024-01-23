@@ -276,6 +276,9 @@ class Player(pygame.sprite.Sprite):
                 self.speed_x = -self.speed
             self.rect.x += self.speed_x
             self.rect.y += self.speed_y
+        if pygame.sprite.spritecollide(self, holes_group, False):
+            if args[0] == pygame.K_e:
+                print('a')
         collided_doors = pygame.sprite.spritecollide(self, doors_group, False)
         if collided_doors and args and args[0] == pygame.K_e:
             for door in collided_doors:
@@ -302,7 +305,6 @@ class Player(pygame.sprite.Sprite):
             self.key = True
 
     def shoot(self, key):
-        print(key)
         bullet = Bullet(self.rect.centerx, self.rect.top, key)
         all_sprites.add(bullet)
         bullet_group.add(bullet)

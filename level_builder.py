@@ -35,7 +35,6 @@ class LevelBuilder:
         pygame.quit()
         sys.exit()
 
-    def clear_sprites(self, every=None):
-        if every is not None:
-            for sprite in every:
-                sprite.kill()
+    def clear_sprites(self, group):
+        for sprite in group:
+            sprite.kill()

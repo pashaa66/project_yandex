@@ -21,8 +21,8 @@ class EscapeFromForest:
         self.BLACK = pygame.Color("#000000")
         self.WHITE = pygame.Color("white")
         self.RED = pygame.Color("red")
-        self.nickname = ''
         self.db = DataBase()
+        self.nickname = ''
         self.score = 0
         self.kills = 0
         self.eaten = 0
@@ -158,7 +158,6 @@ class EscapeFromForest:
                     if not player.check_alive():
                         self.alive = False
                         self.end_screen()
-                        all_sprites.empty()
                     if event.key == pygame.K_UP:
                         player.shoot(event.key)
                     if event.key == pygame.K_DOWN:
@@ -184,8 +183,9 @@ class EscapeFromForest:
                 hit.kill()
             hits_with_boxes = pygame.sprite.groupcollide(player_group, holes_group, False, False)
             for hit in hits_with_boxes:
-                self.end_screen()
-                all_sprites.empty()
+                if hit.alive():
+                    self.alive = True
+                    self.end_screen()
             all_sprites.update()
             self.camera.update(player)
             for sprite in all_sprites:
@@ -197,6 +197,10 @@ class EscapeFromForest:
     def end_screen(self):
         button_quit_to_menu = Button((self.WIDTH / 2 - (252 / 2), 300), (252, 100), "Выход в меню",
                                      "button_1.jpg","button_2.jpg")
+        nickname, score, kills, eaten = self.nickname, self.score, self.kills, self.eaten
+        self.nickname = ''
+        self.score, self.kills, self.eaten = 0, 0, 0
+        self.db.add_to_database(self.nickname, self.score)
         while self.running:
             self.screen.fill(self.BLACK)
             result = "Победа" if self.alive else "Поражение"
@@ -205,9 +209,8 @@ class EscapeFromForest:
             font = pygame.font.Font(None, 50)
             text = font.render(result, 1, self.RED)
             self.screen.blit(text, (self.WIDTH / 2 - (252 / 2) + 50, 0))
-            intro_text = [f"Никнейм: {self.nickname}", f"Очки: {self.score}", f"Убито: {self.kills}",
-                          f"Съедино ягод: {self.eaten}"]
-            self.db.add_to_database(self.nickname, self.score)
+            intro_text = [f"Никнейм: {nickname}", f"Очки: {score}", f"Убито: {kills}",
+                          f"Съедино ягод: {eaten}"]
             font1 = pygame.font.Font(None, 36)
             text_coord = 50
             for line in intro_text:
@@ -227,6 +230,7 @@ class EscapeFromForest:
                 button_quit_to_menu.handle_event(event)
             button_quit_to_menu.check_hover(pygame.mouse.get_pos())
             button_quit_to_menu.draw(self.screen)
+            self.level_builder.clear_sprites(all_sprites)
             pygame.display.flip()
         self.level_builder.terminate()
 
