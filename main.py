@@ -196,12 +196,12 @@ class EscapeFromForest:
         button_quit_to_menu = Button((self.WIDTH / 2 - (252 / 2), 300), (252, 100), "Выход в меню",
                                      "button_1.jpg", "button_2.jpg")
         nickname, score, kills, eaten = self.nickname, self.score, self.kills, self.eaten
-        self.db.add_to_database(self.nickname, self.score)
+        result = "Победа" if self.alive else "Поражение"
+        self.db.add_to_database(self.nickname, result, self.score)
         self.nickname = ''
         self.score, self.kills, self.eaten = 0, 0, 0
         while self.running:
             self.screen.fill(self.BLACK)
-            result = "Победа" if self.alive else "Поражение"
             fon = pygame.transform.scale(self.level_builder.load_image('fon.jpg'), self.SIZE)
             self.screen.blit(fon, (0, 0))
             font = pygame.font.Font(None, 50)

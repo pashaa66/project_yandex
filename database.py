@@ -21,7 +21,7 @@ class DataBase:
         except Exception as e:
             return e
 
-    def add_to_database(self, nickname, score):
-        query = "INSERT INTO game_result(nickname, score) VALUES (?, ?)"
-        self.cursor.execute(query, (nickname, score,))
+    def add_to_database(self, nickname, result, score):
+        query = "INSERT INTO game_result(nickname, result, score) VALUES (?, ?, ?)"
+        self.cursor.execute(query, (nickname,result, score,))
         self.connection.commit()
