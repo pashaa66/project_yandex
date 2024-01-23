@@ -196,9 +196,9 @@ class EscapeFromForest:
         button_quit_to_menu = Button((self.WIDTH / 2 - (252 / 2), 300), (252, 100), "Выход в меню",
                                      "button_1.jpg", "button_2.jpg")
         nickname, score, kills, eaten = self.nickname, self.score, self.kills, self.eaten
+        self.db.add_to_database(self.nickname, self.score)
         self.nickname = ''
         self.score, self.kills, self.eaten = 0, 0, 0
-        self.db.add_to_database(self.nickname, self.score)
         while self.running:
             self.screen.fill(self.BLACK)
             result = "Победа" if self.alive else "Поражение"
