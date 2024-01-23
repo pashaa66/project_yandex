@@ -15,11 +15,13 @@ class DataBase:
         try:
             if nickname == '':
                 raise Error('недопустимый никнейм')
+            if len(nickname) < 3:
+                raise Error('слишком короткий никнейм')
             return 'OK'
         except Exception as e:
             return e
+
     def add_to_database(self, nickname, score):
         query = "INSERT INTO game_result(nickname, score) VALUES (?, ?)"
         self.cursor.execute(query, (nickname, score,))
         self.connection.commit()
-

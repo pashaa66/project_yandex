@@ -25,6 +25,7 @@ boxes_group = pygame.sprite.Group()
 SCREEN_HEIGHT = 720
 SCREEN_WIDTH = 1080
 
+
 class Grass(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y, designation):
         super().__init__(all_sprites, grass_group)
@@ -35,18 +36,23 @@ class Grass(pygame.sprite.Sprite):
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
 
+
 class Candle(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(all_sprites, furniture_group)
         self.image = l_b.load_image("candle.png")
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
+
+
 class Hole(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(all_sprites, holes_group)
         self.image = l_b.load_image("hole.png")
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
+
+
 class Box(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(all_sprites, boxes_group)
@@ -71,12 +77,14 @@ class Door(pygame.sprite.Sprite):
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
 
+
 class Bed(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(all_sprites, furniture_group)
         self.image = l_b.load_image("bed.jpg", color_key=-1)
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
+
 
 class Bush(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
@@ -96,6 +104,7 @@ class Tree(pygame.sprite.Sprite):
             self.image = l_b.load_image("grass2_with_tree2.jpeg")
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
+
 
 class Key(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
@@ -150,6 +159,8 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.x += self.speedx
         if self.rect.right < 0 or self.rect.left > SCREEN_WIDTH or self.rect.bottom < 0 or self.rect.top > SCREEN_HEIGHT:
             self.kill()
+
+
 class Skeleton(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(all_sprites, enemy_group)
@@ -160,6 +171,7 @@ class Skeleton(pygame.sprite.Sprite):
         self.hp = 75
         self.speed = 2
 
+
 class Ghost(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(all_sprites, enemy_group)
@@ -169,16 +181,18 @@ class Ghost(pygame.sprite.Sprite):
             tile_width * pos_x, tile_height * pos_y)
         self.hp = 75
         self.speed = 2
-        # self.player = player
-    # def update(self, *args, **kwargs):
-    #     dx = self.player.rect.x - self.rect.centerx
-    #     dy = self.player.rect.y - self.rect.centery
+
+    # def move_G(self):
+    #     dx = SCREEN_WIDTH - self.rect.centerx
+    #     dy = SCREEN_HEIGHT - self.rect.centery
     #     distance = math.sqrt(dx ** 2 + dy ** 2)
     #     if distance != 0:
     #         dx = dx / distance
     #         dy = dy / distance
     #     self.rect.x += dx * self.speed
     #     self.rect.y += dy * self.speed
+
+
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(all_sprites, player_group)
@@ -239,6 +253,17 @@ class Player(pygame.sprite.Sprite):
                 self.speed_x = -self.speed
             self.rect.x += self.speed_x
             self.rect.y += self.speed_y
+        if pygame.sprite.spritecollide(self, boxes_group, False):
+            if args[0] == pygame.K_w:
+                self.speed_y = self.speed
+            if args[0] == pygame.K_s:
+                self.speed_y = -self.speed
+            if args[0] == pygame.K_a:
+                self.speed_x = self.speed
+            if args[0] == pygame.K_d:
+                self.speed_x = -self.speed
+            self.rect.x += self.speed_x
+            self.rect.y += self.speed_y
         if pygame.sprite.spritecollide(self, enemy_group, False):
             self.hp -= 25
             if args[0] == pygame.K_w:
@@ -281,7 +306,6 @@ class Player(pygame.sprite.Sprite):
         bullet = Bullet(self.rect.centerx, self.rect.top, key)
         all_sprites.add(bullet)
         bullet_group.add(bullet)
-
 
     def check_alive(self):
         if self.hp <= 0:
@@ -340,7 +364,7 @@ def generate_level(level):
                 Grass(x, y, ",")
                 Skeleton(x, y)
             elif level[y][x] == 'z':
-                Floor(x,y)
+                Floor(x, y)
                 Bed(x, y)
             elif level[y][x] == 'h':
                 Grass(x, y, ',')
